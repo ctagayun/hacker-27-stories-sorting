@@ -503,21 +503,27 @@ const InputWithLabel = ({
       Sorting by 'NONE' returns the unsorted list; 
       sorting by 'POINT' returns a list and its items sorted by the points property, 
       and so on:
+   
+  Example: TITLE (derived from the "state" is the sort key mapped to 
+           function:  TITLE: (list) => sortBy(list, 'title')
 */
 const SORTS = {
   NONE: (list) => list,
-  TITLE: (list) => sortBy(list, 'title'),
-  AUTHOR: (list) => sortBy(list, 'author'),
+  TITLE: (list) => sortBy(list, 'title'), // If TITLE sort the list by "title"
+  AUTHOR: (list) => sortBy(list, 'author'), //If AUTHOR sort the list by "author"
   COMMENT: (list) => sortBy(list, 'num_comments').reverse(),
   POINT: (list) => sortBy(list, 'points').reverse(),
 };
 
 const List = ({ list, onRemoveItem }) => {
-  
-  const [sort, setSort] = React.useState('NONE'); //State for sorting
-                                          //The sort state init to "NONE"
+  //Create a state for sorting purposes
+  const [sort, setSort] = React.useState('NONE');
 
   //Handler to set the "sort state" with a specific key:
+  //This function sets the state.
+  //The fucntion is called when the corresponding  button for the 
+  //of an attribute that are sortable is clicked (Ex. Button for the 
+  //"Title" is clicked)
   const handleSort = (sortKey) => {
     setSort(sortKey);
   };
@@ -526,7 +532,11 @@ const List = ({ list, onRemoveItem }) => {
    With the sort (sortKey) state and all possible sort variations (SORTS) 
    at our disposal, we can sort the list before mapping it:
    */
-  const sortFunction = SORTS[sort];
+  const sortFunction = SORTS[sort]; //using the state, go to SORTS dictionary
+                                    //and use it as an index to obtain the 
+                                    //the function it points to in the dicionary.
+                                    //Example: If the state is POINT the function
+                                    //to execute is: (list) => sortBy(list, 'points').reverse(),
   const sortedList = sortFunction(list);
 
   /*
@@ -540,7 +550,9 @@ const List = ({ list, onRemoveItem }) => {
       1. First we extracted the sort function from the dictionary by its 
          sortKey (state), 
          Then we applied the function to the list before mapping it to 
-         render each Item component. 
+         render each Item component. Example:
+           AUTHOR: (list) => sortBy(list, 'author')
+           
       2. Second, we rendered HTML buttons as header columns to give our 
          users interaction. 
       
