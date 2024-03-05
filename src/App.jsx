@@ -517,18 +517,39 @@ const List = ({ list, onRemoveItem }) => {
   const [sort, setSort] = React.useState('NONE'); //State for sorting
                                           //The sort state init to "NONE"
 
-  //Add a new handler to set the sort state with a sort-specific key:
+  //Handler to set the "sort state" with a specific key:
   const handleSort = (sortKey) => {
     setSort(sortKey);
   };
  
+  /*
+   With the sort (sortKey) state and all possible sort variations (SORTS) 
+   at our disposal, we can sort the list before mapping it:
+   */
+  const sortFunction = SORTS[sort];
+  const sortedList = sortFunction(list);
+
   /*
    In the List component's header, buttons can help us to set the 
    sort state for each column/property. An inline handler is used 
    to sneak in the sort-specific key (sortKey). For example when the 
    button for the "Title" column is clicked, 'TITLE' becomes the 
    new sort state:
+
+   Recap: 
+      1. First we extracted the sort function from the dictionary by its 
+         sortKey (state), 
+         Then we applied the function to the list before mapping it to 
+         render each Item component. 
+      2. Second, we rendered HTML buttons as header columns to give our 
+         users interaction. 
+      
+      3. Then, we added implementation details for each 
+         button by changing the sort state. 
+         
+      4. Finally, we used the sort state to sort the actual list
   */
+  return (
   <ul>
     <li style={{ display: 'flex' }}>
       <span style={{ width: '40%' }}>Title
@@ -554,14 +575,15 @@ const List = ({ list, onRemoveItem }) => {
       <span style={{ width: '10%' }}>Actions</span>
     </li>
 
-    {list.map((item) => (
+    {sortedList.map((item) => (
       <Item
         key={item.objectID}
         item={item}
         onRemoveItem={onRemoveItem}
       />
-    ))}
+     ))}
   </ul>
+  );
 };
 
 const Item = ({ item, onRemoveItem }) => (
